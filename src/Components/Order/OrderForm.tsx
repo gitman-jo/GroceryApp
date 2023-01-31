@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createAPIEndpoint, ENDPOINTS } from "../../api";
 import Form from "../../Layouts/Form";
 import {
   Button as MuiButton,
@@ -42,8 +43,55 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function OrderForm(props) {
-  const { values, errors, handleInputChange } = props;
+  const {
+    values,
+    setValues,
+    errors,
+    setErrors,
+    handleInputChange,
+    resetFormControls,
+  } = props;
   const classes = useStyles();
+
+  const [customerList, setCustomerList] = useState([]);
+  const [orderId, setOrderId] = useState(0);
+
+  useEffect(() => {
+    createAPIEndpoint(ENDPOINTS.CUSTOMER)
+      .fetchAll()
+      .then((res) => {
+        let customerList = res.data.map((item) => ({
+          id: item.customerId,
+          title: item.customerName,
+        }));
+        customerList = [{ id: 0, title: "Select" }].concat(customerList);
+        setCustomerList(customerList);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  // useEffect(() => {
+  //   let gTotal = values.orderDetails.reduce((tempTotal, item) => {
+  //     return tempTotal + item.quantity * item.foodItemPrice;
+  //   }, 0);
+  //   setValues({
+  //     ...values,
+  //     gTotal: roundTo2DecimalPoint(gTotal),
+  //   });
+  // }, [JSON.stringify(values.orderDetails)]);
+
+  useEffect(() => {
+    if (orderId == 0) resetFormControls();
+    else {
+      createAPIEndpoint(ENDPOINTS.ORDER)
+        .fetchById(orderId)
+        .then((res) => {
+          setValues(res.data);
+          setErrors({});
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [orderId]);
 
   return (
     <Form>
@@ -70,13 +118,7 @@ export default function OrderForm(props) {
             name="customerId"
             value={values.customerId}
             onChange={handleInputChange}
-            options={[
-              { id: 0, title: "Select" },
-              { id: 1, title: "Customer 1" },
-              { id: 2, title: "Customer 2" },
-              { id: 3, title: "Customer 3" },
-              { id: 4, title: "Customer 4" },
-            ]}
+            options={customerList}
           />
         </Grid>
         <Grid item xs={6}>
