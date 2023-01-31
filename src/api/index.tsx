@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:7204/api/";
+const BASE_URL = "https://localhost:7204/api/";
 
 export const ENDPOINTS = {
   CUSTOMER: "Customer",

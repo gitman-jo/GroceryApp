@@ -54,7 +54,6 @@ export default function OrderForm(props) {
   const classes = useStyles();
 
   const [customerList, setCustomerList] = useState([]);
-  const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.CUSTOMER)
@@ -69,29 +68,6 @@ export default function OrderForm(props) {
       })
       .catch((err) => console.log(err));
   }, []);
-
-  // useEffect(() => {
-  //   let gTotal = values.orderDetails.reduce((tempTotal, item) => {
-  //     return tempTotal + item.quantity * item.foodItemPrice;
-  //   }, 0);
-  //   setValues({
-  //     ...values,
-  //     gTotal: roundTo2DecimalPoint(gTotal),
-  //   });
-  // }, [JSON.stringify(values.orderDetails)]);
-
-  useEffect(() => {
-    if (orderId == 0) resetFormControls();
-    else {
-      createAPIEndpoint(ENDPOINTS.ORDER)
-        .fetchById(orderId)
-        .then((res) => {
-          setValues(res.data);
-          setErrors({});
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [orderId]);
 
   return (
     <Form>

@@ -1,6 +1,9 @@
+import { Grid } from "@material-ui/core";
 import React from "react";
 import { useForm } from "../../Hooks/useForm";
+import OrderedGroceryItems from "./OrderedGroceryItems";
 import OrderForm from "./OrderForm";
+import SearchGroceryItems from "./SearchGroceryItems";
 
 const generateOrderNumber = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -26,8 +29,26 @@ export default function index() {
   } = useForm(getFreshModelObject);
 
   return (
-    <div>
-      <OrderForm {...{ values, errors, handleInputChange }} />
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <OrderForm
+          {...{
+            values,
+            setValues,
+            errors,
+            setErrors,
+            handleInputChange,
+            resetFormControls,
+          }}
+        />
+      </Grid>
+
+      <Grid item xs={6}>
+        <SearchGroceryItems />
+      </Grid>
+      <Grid item xs={6}>
+        <OrderedGroceryItems />
+      </Grid>
+    </Grid>
   );
 }
